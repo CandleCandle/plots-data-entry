@@ -4,14 +4,17 @@
 <head>
 	<title>Something, something title.</title>
 	<style>
-		table {
+		table.results {
 			border-spacing: 0px;
 			border: 1px solid #777;
 		}
-		td, th {
+
+		td.results,
+		th.results {
 			border: 1px solid #777;
 			padding: 5px;
 		}
+
 	</style>
 </head>
 
@@ -25,26 +28,43 @@
 		<div>
 			<h2>Book/Chapter Information</h2>
 			<div>
-				<label for="book-number">Book Number</label> <input id="book-number" type="text" />
-				<label for="chapter-number">Chapter Number</label> <input id="chapter-number" type="text" />
-				<label for="chapter-title">Title</label> <input id="chapter-title" type="text" />
-			</div>
-			<div>
-				<button id="next-secton" name="next-secton">Next Section</button><!-- download toml; prefill chapter number & chapter name -->
-				<button id="next-chapter" name="next-chapter">Next Chapter</button><!-- download toml; prefill chapter number -->
+				<table>
+					<tr>
+						<td><label for="book-number">Book Number</label></td>
+						<td><input id="book-number" type="text" /></td>
+						<td><label for="chapter-number">Chapter Number</label></td>
+						<td><input id="chapter-number" type="text" /></td>
+					</tr>
+					<tr>
+						<td><label for="chapter-section">Chapter Section</label></td>
+						<td><input id="chapter-section" type="text" /></td>
+						<td><label for="chapter-title">Title</label></td>
+						<td><input id="chapter-title" type="text" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><button id="next-secton" name="next-secton">Next Section</button></td>
+						<td colspan="2"><button id="next-chapter" name="next-chapter">Next Chapter</button></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 
 		<div>
 			<h2>Locations</h2>
 			<div>
-				<label for="location-new">New Location</label> <input id="location-new" type="text" />
-				<button id="location-add">Add</button><!-- add location row to toml -->
-			</div>
-			<div>
-				<label for="location-search">Search Locations</label> <input id="location-search" type="text" />
+				<table>
+					<tr>
+						<td><label for="location-new">New Location</label></td>
+						<td><input id="location-new" type="text" /></td>
+						<td><button id="location-add">Add</button></td>
+					</tr>
+					<tr>
+						<td><label for="location-search">Search Locations</label></td>
+						<td colspan="2"><input id="location-search" type="text" /></td>
+					</tr>
+				</table>
 
-				<table id="location-table">
+				<table class="results" id="location-table">
 					<thead>
 						<tr>
 							<th>Location</th>
@@ -61,17 +81,31 @@
 		<div>
 			<h2>Add / Edit Characters</h2>
 			<div>
-				<label for="character-add-name">Name</label> <input id="character-add-name" type="text" />
-				<label for="character-add-was">Was</label> <input id="character-add-was" type="text" />
-				<label for="character-add-theme">Theme</label> <input id="character-add-theme" type="text" />
-				<label for="character-add-notes">Notes</label> <input id="character-add-notes" type="text" />
-				<button id="character-add" name="character-add">Add</button>
+				<table>
+					<tr>
+						<td><label for="character-add-name">Name</label></td>
+						<td><input id="character-add-name" type="text" /></td>
+						<td><label for="character-add-was">Was</label></td>
+						<td><input id="character-add-was" type="text" /></td>
+					</tr>
+					<tr>
+						<td><label for="character-add-theme">Theme</label></td>
+						<td><input id="character-add-theme" type="text" /></td>
+						<td><label for="character-add-notes">Notes</label></td>
+						<td><input id="character-add-notes" type="text" /></td>
+					</tr>
+					<tr>
+						<td colspan="4"><button id="character-add" name="character-add">Add</button></td>
+					</tr>
+					<tr>
+						<td colspan="2"><label for="character-search">Search Character</label></td>
+						<td colspan="2"><input id="character-search" type="text" /></td>
+					</tr>
+				</table>
 			</div>
 
 			<div>
-				<label for="character-search">Search Character</label> <input id="character-search" type="text" />
-
-				<table id="character-table">
+				<table class="results" id="character-table">
 					<thead>
 						<tr>
 							<th>Current Name</th>

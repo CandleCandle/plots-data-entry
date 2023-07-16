@@ -56,11 +56,15 @@ function updateCharacterReport() {
 }
 
 function updateBookNumber(value) {
-    current_chapter.book_number = Number(value);
+    current_chapter.item_number.major = Number(value);
 }
 
 function updateChapterNumber(value) {
-    current_chapter.order = Number(value);
+    current_chapter.item_number.minor = Number(value);
+}
+
+function updateChapterSection(value) {
+    current_chapter.item_number.patch = Number(value);
 }
 
 function updateChapterTitle(value) {
@@ -106,8 +110,10 @@ function setupNextSection() {
     let last_chapter = chapters[chapters.length-1];
     document.getElementById('book-number').value = last_chapter.book_number;
     updateBookNumber(last_chapter.book_number);
-    document.getElementById('chapter-number').value = last_chapter.order + 0.1;
-    updateChapterNumber(last_chapter.order + 0.1);
+    document.getElementById('chapter-number').value = last_chapter.number;
+    updateChapterNumber(last_chapter.number);
+    document.getElementById('chapter-section').value = last_chapter.next_section_number();
+    updateChapterSection(last_chapter.next_section_number());
     document.getElementById('chapter-title').value = last_chapter.title;
     updateChapterTitle(last_chapter.title);
     updateCharacterReport();
@@ -118,8 +124,10 @@ function setupNextChapter() {
     let last_chapter = chapters[chapters.length-1];
     document.getElementById('book-number').value = last_chapter.book_number;
     updateBookNumber(last_chapter.book_number);
-    document.getElementById('chapter-number').value = Math.floor(last_chapter.order) + 1;
-    updateChapterNumber(Math.floor(last_chapter.order) + 1);
+    document.getElementById('chapter-number').value = last_chapter.next_chapter_number();
+    updateChapterNumber(last_chapter.next_chapter_number());
+    document.getElementById('chapter-section').value = 0;
+    updateChapterSection(0);
     updateCharacterReport();
     updateToml();
 }
@@ -168,6 +176,13 @@ function handleBookNumber(event) {
 function handleChapterNumber(event) {
     onEnter(event, e => {
         updateChapterNumber(e.target.value);
+        updateToml()
+    });
+}
+
+function handleChapterSection(event) {
+    onEnter(event, e => {
+        updateChapterSection(e.target.value);
         updateToml()
     });
 }
@@ -345,6 +360,8 @@ document.getElementById('chapter-number').addEventListener('keyup', handleChapte
 document.getElementById('chapter-number').addEventListener('focusout', handleChapterNumber);
 document.getElementById('chapter-title').addEventListener('keyup', handleChapterTitle);
 document.getElementById('chapter-title').addEventListener('focusout', handleChapterTitle);
+document.getElementById('chapter-section').addEventListener('keyup', handleChapterSection);
+document.getElementById('chapter-section').addEventListener('focusout', handleChapterSection);
 document.getElementById('next-secton').addEventListener('click', handleNextSection);
 document.getElementById('next-chapter').addEventListener('click', handleNextChapter);
 document.getElementById('character-add').addEventListener('click', handleAddNewCharacter);
