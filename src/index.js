@@ -239,37 +239,40 @@ function handleCharacterSearch(event) {
         }
         if(e.target.value && e.target.value.length >= 2) {
             let search = new RegExp('.*' + e.target.value + '.*', 'i');
-            let characters_set = chapters
+            let old_results = document.getElementById('character-search-results');
+            let replacement = document.createElement('tbody');
+            replacement.id = 'character-search-results';
+
+            chapters
                 .flatMap(chapter => chapter.get_present_characters())
                 .filter(character => {
                     return character.name.match(search)
                         || character.get_previous_names().some(c => c.match(search))
-                }).reduce((p, c) => {
+                })
+                .sort(Character.ChapterOrder.reversed().compare)
+                .reduce((p, c) => {
                     if (!p.some(entry => entry.name === c.name)) p.unshift(c);
                     return p;
-                }, []);
-                let old_results = document.getElementById('character-search-results');
-                let replacement = document.createElement('tbody');
-                replacement.id = 'character-search-results';
-                [...characters_set]
-                    .sort(Character.CharacterName.compare)
-                    .forEach(character => {
-                        console.log('character search result: ', character);
-                        let row = replacement.insertRow(-1);
-                        let prev_names = character.get_previous_names()
-                            .reduce((acc, cur) => {
-                                if (!acc.includes(cur) && cur !== character.name) acc.push(cur);
-                                return acc;
-                            }, [])
-                        row.insertCell(-1).textContent = character.name;
-                        row.insertCell(-1).textContent = prev_names.join(', ');
-                        row.insertCell(-1).textContent = character.get_theme();
-                        row.insertCell(-1).textContent = character.notes;
-                        let buttons = row.insertCell(-1);
-                        buttons.appendChild(createCharacterAddButton(character));
-                        buttons.appendChild(createCharacterEditButton(character));
-                        buttons.appendChild(createCharacterRenameButton(character));
-                    });
+                }, [])
+                .reverse()
+                .forEach(character => {
+                    console.log('character search result: ', character);
+                    let row = replacement.insertRow(-1);
+                    let prev_names = character.get_previous_names()
+                        .reduce((acc, cur) => {
+                            if (!acc.includes(cur) && cur !== character.name) acc.push(cur);
+                            return acc;
+                        }, [])
+                    row.insertCell(-1).textContent = character.name;
+                    row.insertCell(-1).textContent = character.chapter.item_number;
+                    row.insertCell(-1).textContent = prev_names.join(', ');
+                    row.insertCell(-1).textContent = character.get_theme();
+                    row.insertCell(-1).textContent = character.notes;
+                    let buttons = row.insertCell(-1);
+                    buttons.appendChild(createCharacterAddButton(character));
+                    buttons.appendChild(createCharacterEditButton(character));
+                    buttons.appendChild(createCharacterRenameButton(character));
+                });
                 table.replaceChild(replacement, old_results);
             }
         });
