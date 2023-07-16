@@ -356,6 +356,11 @@ function createLocationEditButton(location) {
     return button;
 }
 
+function handleManualTomlChange(event) {
+    current_chapter = Chapter.from_object(toml.parse(event.target.value));
+    console.log('replacement chapter', current_chapter);
+}
+
 document.getElementById('toml-selection').addEventListener('change', handleUpdateCharacterList, false);
 document.getElementById('book-number').addEventListener('keyup', handleBookNumber);
 document.getElementById('book-number').addEventListener('focusout', handleBookNumber);
@@ -371,3 +376,4 @@ document.getElementById('character-add').addEventListener('click', handleAddNewC
 document.getElementById('location-add').addEventListener('click', handleAddNewLocation);
 document.getElementById('location-search').addEventListener('keyup', handleLocationSearch);
 document.getElementById('character-search').addEventListener('keyup', handleCharacterSearch);
+document.getElementById('current-toml').addEventListener('focusout', handleManualTomlChange);
