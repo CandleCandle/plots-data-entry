@@ -7,7 +7,7 @@ import FileSaver from 'file-saver';
 let chapters = [];
 let current_chapter = new Chapter();
 
-function updateCharacterList(e) {
+function handleUpdateCharacterList(e) {
     let f = e.target.files[0];
     if (e.target.files.length === 0) return;
     let arr = [];
@@ -120,7 +120,7 @@ function setupNextChapter() {
     updateToml();
 }
 
-function addNewCharacter(event) {
+function handleAddNewCharacter(event) {
     let char = new Character(
         document.getElementById('character-add-name').value,
         document.getElementById('character-add-theme').value,
@@ -134,32 +134,50 @@ function addNewCharacter(event) {
     document.getElementById('character-add-was').value = '';
     updateToml();
 }
-function addNewLocation(event) {
+function handleAddNewLocation(event) {
     current_chapter.add_location(document.getElementById('location-new').value);
     document.getElementById('location-new').value = '';
     updateToml();
 }
 
-document.getElementById('toml-selection')
-    .addEventListener('change', updateCharacterList, false);
+function handleNextSection(event) {
+    downloadToml();
+    resetForm();
+    setupNextSection();
+}
 
-document.getElementById('book-number')
-    .addEventListener('keyup', (e) => onEnter(e, (e) => { updateBookNumber(e.target.value); updateToml(); }));
+function handleNextChapter(event) {
+    downloadToml();
+    resetForm();
+    setupNextChapter();
+}
 
-document.getElementById('chapter-number')
-    .addEventListener('keyup', (e) => onEnter(e, (e) => { updateChapterNumber(e.target.value); updateToml(); }));
+function handleBookNumber(event) {
+    onEnter(event, (e) => {
+        updateBookNumber(e.target.value);
+        updateToml();
+    });
+}
 
-document.getElementById('chapter-title')
-    .addEventListener('keyup', (e) => onEnter(e, (e) => { updateChapterTitle(e.target.value); updateToml(); }));
+function handleChapterNumber(event) {
+    onEnter(event, (e) => {
+        updateChapterNumber(e.target.value);
+        updateToml()
+    });
+}
 
-document.getElementById('next-secton')
-    .addEventListener('click', (e) => { downloadToml(); resetForm(); setupNextSection(); })
+function handleChapterTitle(event) {
+    onEnter(event, (e) => {
+        updateChapterTitle(e.target.value);
+        updateToml();
+    });
+}
 
-document.getElementById('next-chapter')
-    .addEventListener('click', (e) => { downloadToml(); resetForm(); setupNextChapter(); })
-
-document.getElementById('character-add')
-    .addEventListener('click', (e) => addNewCharacter(e))
-
-document.getElementById('location-add')
-    .addEventListener('click', (e) => addNewLocation(e))
+document.getElementById('toml-selection').addEventListener('change', handleUpdateCharacterList, false);
+document.getElementById('book-number').addEventListener('keyup', handleBookNumber);
+document.getElementById('chapter-number').addEventListener('keyup', handleChapterNumber);
+document.getElementById('chapter-title').addEventListener('keyup', handleChapterTitle);
+document.getElementById('next-secton').addEventListener('click', handleNextSection)
+document.getElementById('next-chapter').addEventListener('click', handleNextChapter)
+document.getElementById('character-add').addEventListener('click', handleAddNewCharacter)
+document.getElementById('location-add').addEventListener('click', handleAddNewLocation)
