@@ -120,6 +120,26 @@ function setupNextChapter() {
     updateToml();
 }
 
+function addNewCharacter(event) {
+    let char = new Character(
+        document.getElementById('character-add-name').value,
+        document.getElementById('character-add-theme').value,
+        document.getElementById('character-add-notes').value,
+        document.getElementById('character-add-was').value
+    );
+    current_chapter.with_present(char);
+    document.getElementById('character-add-name').value = '';
+    document.getElementById('character-add-theme').value = '';
+    document.getElementById('character-add-notes').value = '';
+    document.getElementById('character-add-was').value = '';
+    updateToml();
+}
+function addNewLocation(event) {
+    current_chapter.add_location(document.getElementById('location-new').value);
+    document.getElementById('location-new').value = '';
+    updateToml();
+}
+
 document.getElementById('toml-selection')
     .addEventListener('change', updateCharacterList, false);
 
@@ -138,5 +158,8 @@ document.getElementById('next-secton')
 document.getElementById('next-chapter')
     .addEventListener('click', (e) => { downloadToml(); resetForm(); setupNextChapter(); })
 
-// document.getElementById('chapter-number')
-// .addEventListener('keyup', (e) => onEnter(e, (e) => { updateChapterNumber(e.target.value); updateToml() }));
+document.getElementById('character-add')
+    .addEventListener('click', (e) => addNewCharacter(e))
+
+document.getElementById('location-add')
+    .addEventListener('click', (e) => addNewLocation(e))
