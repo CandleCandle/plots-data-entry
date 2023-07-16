@@ -189,7 +189,11 @@ function handleLocationSearch(event) {
         if(e.target.value && e.target.value.length >= 2) {
             let search = new RegExp('.*' + e.target.value + '.*', 'i');
             let locations_set = chapters
-                .flatMap(chapter => chapter.get_locations())
+                .flatMap(chapter => {
+                    let l = chapter.get_locations();
+                    if (l) return l;
+                    return [];
+                })
                 .filter(location => {
                     return location.match(search);
                 }).reduce((p, c) => {p.add(c); return p;}, new Set());
