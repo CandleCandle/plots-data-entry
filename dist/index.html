@@ -3,6 +3,16 @@
 
 <head>
 	<title>Something, something title.</title>
+	<style>
+		table {
+			border-spacing: 0px;
+			border: 1px solid #777;
+		}
+		td, th {
+			border: 1px solid #777;
+			padding: 5px;
+		}
+	</style>
 </head>
 
 <body>
@@ -34,7 +44,7 @@
 			<div>
 				<label for="location-search">Search Locations</label> <input id="location-search" type="text" />
 
-				<table id="location-table" style="margin: 1px; border: 1px solid black;">
+				<table id="location-table">
 					<thead>
 						<tr>
 							<th>Location</th>
@@ -68,7 +78,7 @@
 			<div>
 				<label for="character-search">Search Character</label> <input id="character-search" type="text" />
 
-				<table style="margin: 1px; border: 1px solid black;">
+				<table id="character-table">
 					<thead>
 						<tr>
 							<th>Current Name</th>
@@ -78,7 +88,7 @@
 							<th>&nbsp;</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="character-search-results">
 						<tr>
 							<td>John Doe</td>
 							<td>Jane Doe, Jill Doe</th>

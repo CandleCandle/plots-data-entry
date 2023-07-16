@@ -187,7 +187,7 @@ function handleLocationSearch(event) {
             clearLocationSearch();
             return;
         }
-        if(e.target.value && e.target.value.length >= 3) {
+        if(e.target.value && e.target.value.length >= 2) {
             let search = new RegExp('.*' + e.target.value + '.*', 'i');
             let locations_set = chapters
                 .flatMap(chapter => chapter.get_locations())
@@ -212,11 +212,101 @@ function handleLocationSearch(event) {
     });
 }
 
+function handleCharacterSearch(event) {
+    onEnter(event, e => {
+        let table = document.getElementById('character-table');
+        if(e.target.value.length === 0) {
+            clearCharacterSearch();
+            return;
+        }
+        if(e.target.value && e.target.value.length >= 2) {
+            let search = new RegExp('.*' + e.target.value + '.*', 'i');
+            let characters_set = chapters
+                .flatMap(chapter => chapter.get_present_characters())
+                .filter(character => {
+                    return character.name.match(search)
+                        || character.get_previous_names().some(c => c.match(search))
+                }).reduce((p, c) => {
+                    if (!p.some(entry => entry.name === c.name)) p.unshift(c);
+                    return p;
+                }, []);
+                let old_results = document.getElementById('character-search-results');
+                let replacement = document.createElement('tbody');
+                replacement.id = 'character-search-results';
+                [...characters_set]
+                    .sort(Character.CharacterName.compare)
+                    .forEach(character => {
+                        console.log('character search result: ', character);
+                        let row = replacement.insertRow(-1);
+                        let prev_names = character.get_previous_names()
+                            .reduce((acc, cur) => {
+                                if (!acc.includes(cur) && cur !== character.name) acc.push(cur);
+                                return acc;
+                            }, [])
+                        row.insertCell(-1).textContent = character.name;
+                        row.insertCell(-1).textContent = prev_names.join(', ');
+                        row.insertCell(-1).textContent = character.get_theme();
+                        row.insertCell(-1).textContent = character.notes;
+                        let buttons = row.insertCell(-1);
+                        buttons.appendChild(createCharacterAddButton(character));
+                        buttons.appendChild(createCharacterEditButton(character));
+                        buttons.appendChild(createCharacterRenameButton(character));
+                    });
+                table.replaceChild(replacement, old_results);
+            }
+        });
+}
+
+function createCharacterEditButton(character) {
+    let button = document.createElement('button');
+    button.textContent = 'Edit';
+    button.addEventListener('click', e => {
+        document.getElementById('character-add-name').value = character.name;
+        document.getElementById('character-add-was').value = '';
+        document.getElementById('character-add-theme').value = '';
+        document.getElementById('character-add-notes').value = '';
+        document.getElementById('character-add-theme').focus();
+    });
+    return button;
+}
+
+function createCharacterRenameButton(character) {
+    let button = document.createElement('button');
+    button.textContent = 'Rename';
+    button.addEventListener('click', e => {
+        document.getElementById('character-add-name').value = '';
+        document.getElementById('character-add-was').value = character.name;
+        document.getElementById('character-add-theme').value = '';
+        document.getElementById('character-add-notes').value = '';
+        document.getElementById('character-add-name').focus();
+    });
+    return button;
+}
+
+function createCharacterAddButton(character) {
+    let button = document.createElement('button');
+    button.textContent = 'Add';
+    button.addEventListener('click', e => {
+        current_chapter.with_present(new Character(character.name));
+        updateToml();
+        clearCharacterSearch();
+    });
+    return button;
+}
+
+function clearCharacterSearch() {
+    clearSearchResults('character-table', 'character-search-results');
+}
+
 function clearLocationSearch() {
-    let table = document.getElementById('location-table');
-    let old_results = document.getElementById('location-search-results');
+    clearSearchResults('location-table', 'location-search-results');
+}
+
+function clearSearchResults(table_id, tbody_id) {
+    let table = document.getElementById(table_id);
+    let old_results = document.getElementById(tbody_id);
     let replacement = document.createElement('tbody');
-    replacement.id = 'location-search-results';
+    replacement.id = tbody_id;
     table.replaceChild(replacement, old_results);
 }
 
@@ -236,6 +326,7 @@ function createLocationEditButton(location) {
     button.textContent = 'Edit';
     button.addEventListener('click', e => {
         document.getElementById('location-new').value = location;
+        document.getElementById('location-new').focus();
     });
     return button;
 }
@@ -252,3 +343,4 @@ document.getElementById('next-chapter').addEventListener('click', handleNextChap
 document.getElementById('character-add').addEventListener('click', handleAddNewCharacter);
 document.getElementById('location-add').addEventListener('click', handleAddNewLocation);
 document.getElementById('location-search').addEventListener('keyup', handleLocationSearch);
+document.getElementById('character-search').addEventListener('keyup', handleCharacterSearch);
