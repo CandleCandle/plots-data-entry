@@ -34,24 +34,26 @@ function handleUpdateCharacterList(e) {
                     }
                     return acc;
                 }, []);
-
-            let characters_report = Object.entries(chapters[chapters.length-1].get_report('all-characters').data_obj())
-                .sort((a, b) => {
-                    if (a[1][0] != b[1][0]) return a[1][0] - b[1][0]; // "book"
-                    if (a[1][1] != b[1][1]) return a[1][1] - b[1][1]; // "chapter"
-                    return a[0].localeCompare(b[0]); // "name"
-                })
-                .map((item) => item[0] + " => " + "book: " + item[1][0] + " chapter: " + item[1][1])
-                .reduce((p, c) => {
-                    let r = p;
-                    if (p !== "") r += "\n";
-                    r += c
-                    return r
-                }, "");
-
-            document.getElementById('character-list').textContent = characters_report
+            updateCharacterReport();
         });
 
+}
+
+function updateCharacterReport() {
+    let characters_report = Object.entries(chapters[chapters.length-1].get_report('all-characters').data_obj())
+        .sort((a, b) => {
+            if (a[1][0] != b[1][0]) return a[1][0] - b[1][0]; // "book"
+            if (a[1][1] != b[1][1]) return a[1][1] - b[1][1]; // "chapter"
+            return a[0].localeCompare(b[0]); // "name"
+        })
+        .map((item) => item[0] + " => " + "book: " + item[1][0] + " chapter: " + item[1][1])
+        .reduce((p, c) => {
+            let r = p;
+            if (p !== "") r += "\n";
+            r += c
+            return r
+        }, "");
+    document.getElementById('character-list').textContent = characters_report
 }
 
 function updateBookNumber(value) {
@@ -93,6 +95,7 @@ function resetForm() {
     }
     chapters.push(current_chapter);
     current_chapter = new Chapter();
+    current_chapter.title = '';
     [
         'book-number', 'chapter-number', 'chapter-title', 'current-toml'
     ].forEach(e => {
@@ -108,6 +111,7 @@ function setupNextSection() {
     updateChapterNumber(last_chapter.order + 0.1);
     document.getElementById('chapter-title').value = last_chapter.title;
     updateChapterTitle(last_chapter.title);
+    updateCharacterReport();
     updateToml();
 }
 
@@ -117,6 +121,7 @@ function setupNextChapter() {
     updateBookNumber(last_chapter.book_number);
     document.getElementById('chapter-number').value = Math.floor(last_chapter.order) + 1;
     updateChapterNumber(Math.floor(last_chapter.order) + 1);
+    updateCharacterReport();
     updateToml();
 }
 
