@@ -8,7 +8,6 @@ let chapters = [];
 let current_chapter = new Chapter();
 
 function handleUpdateCharacterList(e) {
-    let f = e.target.files[0];
     if (e.target.files.length === 0) return;
     let arr = [];
     for (let i = 0; i < e.target.files.length; ++i) {
@@ -290,6 +289,8 @@ function createCharacterAddButton(character) {
         current_chapter.with_present(new Character(character.name));
         updateToml();
         clearCharacterSearch();
+        document.getElementById('character-search').value = '';
+        document.getElementById('character-search').focus();
     });
     return button;
 }
@@ -317,6 +318,8 @@ function createLocationAddButton(location) {
         current_chapter.add_location(location);
         updateToml();
         clearLocationSearch();
+        document.getElementById('location-search').value = '';
+        document.getElementById('location-search').focus();
     });
     return button;
 }
