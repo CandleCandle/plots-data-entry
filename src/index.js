@@ -53,18 +53,16 @@ function handleUpdateCharacterList(e) {
         });
 
 }
+
 function updateBookNumber(value) {
-    console.log('update book num', 'current chapter: ', current_chapter);
     current_chapter.book_number = Number(value);
 }
 
 function updateChapterNumber(value) {
-    console.log('update chapter num', 'current chapter: ', current_chapter);
     current_chapter.order = Number(value);
 }
 
 function updateChapterTitle(value) {
-    console.log('update chapter title', 'current chapter: ', current_chapter);
     current_chapter.title = value;
 }
 
@@ -74,7 +72,11 @@ function updateToml() {
 }
 
 function onEnter(e, cb) {
-    if (e.key === 'Enter') {
+    if (e.type === 'keyup') {
+        if (e.key === 'Enter') {
+            cb(e);
+        }
+    } else {
         cb(e);
     }
 }
@@ -92,7 +94,7 @@ function resetForm() {
     chapters.push(current_chapter);
     current_chapter = new Chapter();
     [
-        'book-number', 'chapter-number', 'chapter-title'
+        'book-number', 'chapter-number', 'chapter-title', 'current-toml'
     ].forEach(e => {
         document.getElementById(e).value = '';
     });
@@ -100,7 +102,6 @@ function resetForm() {
 
 function setupNextSection() {
     let last_chapter = chapters[chapters.length-1];
-    console.log('setup next sect', 'current chapter: ', last_chapter);
     document.getElementById('book-number').value = last_chapter.book_number;
     updateBookNumber(last_chapter.book_number);
     document.getElementById('chapter-number').value = last_chapter.order + 0.1;
@@ -112,7 +113,6 @@ function setupNextSection() {
 
 function setupNextChapter() {
     let last_chapter = chapters[chapters.length-1];
-    console.log('setup next chap', 'current chapter: ', last_chapter);
     document.getElementById('book-number').value = last_chapter.book_number;
     updateBookNumber(last_chapter.book_number);
     document.getElementById('chapter-number').value = Math.floor(last_chapter.order) + 1;
@@ -134,6 +134,7 @@ function handleAddNewCharacter(event) {
     document.getElementById('character-add-was').value = '';
     updateToml();
 }
+
 function handleAddNewLocation(event) {
     current_chapter.add_location(document.getElementById('location-new').value);
     document.getElementById('location-new').value = '';
@@ -175,8 +176,11 @@ function handleChapterTitle(event) {
 
 document.getElementById('toml-selection').addEventListener('change', handleUpdateCharacterList, false);
 document.getElementById('book-number').addEventListener('keyup', handleBookNumber);
+document.getElementById('book-number').addEventListener('focusout', handleBookNumber);
 document.getElementById('chapter-number').addEventListener('keyup', handleChapterNumber);
+document.getElementById('chapter-number').addEventListener('focusout', handleChapterNumber);
 document.getElementById('chapter-title').addEventListener('keyup', handleChapterTitle);
+document.getElementById('chapter-title').addEventListener('focusout', handleChapterTitle);
 document.getElementById('next-secton').addEventListener('click', handleNextSection)
 document.getElementById('next-chapter').addEventListener('click', handleNextChapter)
 document.getElementById('character-add').addEventListener('click', handleAddNewCharacter)
