@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Something, something title.</title>
+</head>
+
+<body>
+	<div id="setup">
+		<h2>Load Base Files</h2>
+		<input type="file" id="toml-selection" accept=".toml" multiple />
+	</div>
+
+	<div id="in-progress">
+		<div>
+			<h2>Book/Chapter Information</h2>
+			<div>
+				<label for="book-number">Book Number</label> <input id="book-number" type="text" />
+				<label for="chapter-number">Chapter Number</label> <input id="chapter-number" type="text" />
+				<label for="chapter-title">Title</label> <input id="chapter-title" type="text" />
+			</div>
+			<div>
+				<button id="next-secton" value="next-section" name="next-secton">Next Section</button><!-- download toml; prefill chapter number & chapter name -->
+				<button id="next-chapter" value="next-chapter" name="next-chapter">Next Chapter</button><!-- download toml; prefill chapter number -->
+			</div>
+		</div>
+
+		<div>
+			<h2>Locations</h2>
+			<div>
+				<label for="location-new">New Location</label> <input id="location-new" type="text" />
+				<button value="add" name="location-add-existing">Add</button><!-- add location row to toml -->
+			</div>
+			<div>
+				<label for="location-search">Search Locations</label> <input id="location-search" type="text" />
+
+				<table style="margin: 1px; border: 1px solid black;">
+					<thead>
+						<tr>
+							<th>Location</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Tiny Town</td>
+							<td>
+								<button value="add" name="location-add-existing">Add</button><!-- add existing location to current toml -->
+								<button value="edit" name="location-edit-existing">Edit</button><!-- fill 'location-new' with this data -->
+							</td>
+						</tr>
+						<!-- empty -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div>
+			<h2>Add / Edit Characters</h2>
+			<div>
+				<label for="character-add-name">Name</label> <input id="character-add-name" type="text" />
+				<label for="character-add-was">Was</label> <input id="character-add-was" type="text" />
+				<label for="character-add-theme">Theme</label> <input id="character-add-theme" type="text" />
+				<label for="character-add-notes">Notes</label> <input id="character-add-notes" type="text" />
+				<button value="character-add" name="character-add">Add</button>
+			</div>
+
+			<div>
+				<label for="character-search">Search Character</label> <input id="character-search" type="text" />
+
+				<table style="margin: 1px; border: 1px solid black;">
+					<thead>
+						<tr>
+							<th>Current Name</th>
+							<th>Previously Known As</th>
+							<th>Current Theme</th>
+							<th>Notes</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>John Doe</td>
+							<td>Jane Doe, Jill Doe</th>
+							<td>unknown-person</td>
+							<td>Over the Hill and Back</td>
+							<td>
+								<button value="add" name="add-existing">Add</button>
+								<button value="edit" name="edit-existing">Edit</button>
+								<button value="rename" name="rename-existing">Rename</button>
+							</td>
+						</tr>
+						<!-- empty -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<textarea rows="50" cols="100" id="current-toml"></textarea>
+	</div>
+
+	<div>
+		<pre id="character-list"></pre>
+	</div>
+
+	<script src="plots-data-entry.bundle.js"></script>
+
+
+</body>
+
+</html>
