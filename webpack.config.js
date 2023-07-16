@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 
-export default {
+let config = {
 	entry: ['./src/index.js'],
 
 	module: {
@@ -23,13 +23,21 @@ export default {
 	},
 
 	output: {
-		path: path.resolve(__dirname, 'dist'),
+		path: path.resolve(__dirname, 'docs'),
 		filename: 'plots-data-entry.bundle.js',
 	},
 
 	optimization: {
-        minimize: false
+        minimize: true
     },
 
 	devtool: 'source-map',
 }
+
+export default (env, argv) => {
+	if (argv.mode === 'development') {
+		config.devtool = 'source-map';
+		config.optimization.minimize = false;
+	}
+	return config;
+};

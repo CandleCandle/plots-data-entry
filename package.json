@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --recursive",
-    "build": "node_modules/.bin/webpack --config webpack.config.js --mode=production",
+    "prod": "node_modules/.bin/webpack --config webpack.config.js --mode=production",
     "watch": "node_modules/.bin/webpack --config webpack.config.js --mode=development -w"
   },
   "author": "",
