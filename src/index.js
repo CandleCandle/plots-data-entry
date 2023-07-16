@@ -144,6 +144,7 @@ function handleAddNewLocation(event) {
     current_chapter.add_location(document.getElementById('location-new').value);
     document.getElementById('location-new').value = '';
     updateToml();
+    clearLocationSearch();
 }
 
 function handleNextSection(event) {
@@ -159,24 +160,84 @@ function handleNextChapter(event) {
 }
 
 function handleBookNumber(event) {
-    onEnter(event, (e) => {
+    onEnter(event, e => {
         updateBookNumber(e.target.value);
         updateToml();
     });
 }
 
 function handleChapterNumber(event) {
-    onEnter(event, (e) => {
+    onEnter(event, e => {
         updateChapterNumber(e.target.value);
         updateToml()
     });
 }
 
 function handleChapterTitle(event) {
-    onEnter(event, (e) => {
+    onEnter(event, e => {
         updateChapterTitle(e.target.value);
         updateToml();
     });
+}
+
+function handleLocationSearch(event) {
+    onEnter(event, e => {
+        let table = document.getElementById('location-table');
+        if(e.target.value.length === 0) {
+            clearLocationSearch();
+            return;
+        }
+        if(e.target.value && e.target.value.length >= 3) {
+            let search = new RegExp('.*' + e.target.value + '.*', 'i');
+            let locations_set = chapters
+                .flatMap(chapter => chapter.get_locations())
+                .filter(location => {
+                    return location.match(search);
+                }).reduce((p, c) => {p.add(c); return p;}, new Set());
+            let old_results = document.getElementById('location-search-results');
+            let replacement = document.createElement('tbody');
+            replacement.id = 'location-search-results';
+            [...locations_set]
+                .sort((a, b) => a.localeCompare(b))
+                .forEach(location => {
+                    console.log('location search result: ', location);
+                    let row = replacement.insertRow(-1);
+                    row.insertCell(-1).textContent = location;
+                    let buttons = row.insertCell(-1);
+                    buttons.appendChild(createLocationAddButton(location));
+                    buttons.appendChild(createLocationEditButton(location));
+                });
+            table.replaceChild(replacement, old_results);
+        }
+    });
+}
+
+function clearLocationSearch() {
+    let table = document.getElementById('location-table');
+    let old_results = document.getElementById('location-search-results');
+    let replacement = document.createElement('tbody');
+    replacement.id = 'location-search-results';
+    table.replaceChild(replacement, old_results);
+}
+
+function createLocationAddButton(location) {
+    let button = document.createElement('button');
+    button.textContent = 'Add';
+    button.addEventListener('click', e => {
+        current_chapter.add_location(location);
+        updateToml();
+        clearLocationSearch();
+    });
+    return button;
+}
+
+function createLocationEditButton(location) {
+    let button = document.createElement('button');
+    button.textContent = 'Edit';
+    button.addEventListener('click', e => {
+        document.getElementById('location-new').value = location;
+    });
+    return button;
 }
 
 document.getElementById('toml-selection').addEventListener('change', handleUpdateCharacterList, false);
@@ -186,7 +247,8 @@ document.getElementById('chapter-number').addEventListener('keyup', handleChapte
 document.getElementById('chapter-number').addEventListener('focusout', handleChapterNumber);
 document.getElementById('chapter-title').addEventListener('keyup', handleChapterTitle);
 document.getElementById('chapter-title').addEventListener('focusout', handleChapterTitle);
-document.getElementById('next-secton').addEventListener('click', handleNextSection)
-document.getElementById('next-chapter').addEventListener('click', handleNextChapter)
-document.getElementById('character-add').addEventListener('click', handleAddNewCharacter)
-document.getElementById('location-add').addEventListener('click', handleAddNewLocation)
+document.getElementById('next-secton').addEventListener('click', handleNextSection);
+document.getElementById('next-chapter').addEventListener('click', handleNextChapter);
+document.getElementById('character-add').addEventListener('click', handleAddNewCharacter);
+document.getElementById('location-add').addEventListener('click', handleAddNewLocation);
+document.getElementById('location-search').addEventListener('keyup', handleLocationSearch);
